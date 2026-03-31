@@ -46,6 +46,8 @@ const config: Config = {
     "^@filters/(.*)$": "<rootDir>/src/filters/$1",
     "^@middleware/(.*)$": "<rootDir>/src/middleware/$1",
     "^@utils/(.*)$": "<rootDir>/src/utils/$1",
+    "^@interfaces/(.*)$": "<rootDir>/src/interfaces/$1",
+    "^@indicators/(.*)$": "<rootDir>/src/indicators/$1",
   },
 };
 
