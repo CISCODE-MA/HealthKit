@@ -30,7 +30,9 @@
       "@config/*": ["src/config/*"],
       "@filters/*": ["src/filters/*"],
       "@middleware/*": ["src/middleware/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@interfaces/*": ["src/interfaces/*"],
+      "@indicators/*": ["src/indicators/*"]
     }
   },
   "include": ["src/**/*.ts", "test/**/*.ts"],
