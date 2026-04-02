@@ -6,7 +6,7 @@ import { Injectable } from "@nestjs/common";
 
 export interface HealthCheckResult {
   status: "ok" | "error";
-  indicators: HealthIndicatorResult[];
+  results: HealthIndicatorResult[];
 }
 
 /**
@@ -45,6 +45,6 @@ export class HealthService {
     });
 
     const allUp = results.every((r) => r.status === "up");
-    return { status: allUp ? "ok" : "error", indicators: results };
+    return { status: allUp ? "ok" : "error", results };
   }
 }
