@@ -61,81 +61,44 @@ export interface HealthModuleAsyncOptions {
 @Module({})
 export class HealthKitModule {
   static register(options: HealthModuleOptions = {}): DynamicModule {
-    const path = options.path ?? "health";
-    const indicatorClasses = options.indicators ?? [];
-
-    // Separate DI-based indicator classes by scope using decorator metadata
-    const livenessClasses = indicatorClasses.filter(
-      (cls) => Reflect.getMetadata(HEALTH_INDICATOR_METADATA, cls) === "liveness",
-    );
-    const readinessClasses = indicatorClasses.filter(
-      (cls) => Reflect.getMetadata(HEALTH_INDICATOR_METADATA, cls) === "readiness",
-    );
-
-    // Create a NestJS provider for each indicator class (enables DI injection)
-    const indicatorProviders: Provider[] = indicatorClasses.map((cls) => ({
-      provide: cls,
-      useClass: cls,
-    }));
+    const { path = "health", liveness = [], readiness = [], indicators = [] } = options;
+    const { indicatorProviders, livenessClasses, readinessClasses } =
+      HealthKitModule._resolveIndicatorClasses(indicators);
 
     const providers: Provider[] = [
       ...indicatorProviders,
       {
         provide: HEALTH_LIVENESS_INDICATORS,
-        useFactory: (...injected: BaseHealthIndicator[]) => [
-          ...(options.liveness ?? []),
-          ...injected,
-        ],
+        useFactory: (...injected: BaseHealthIndicator[]) => [...liveness, ...injected],
         inject: livenessClasses,
       },
       {
         provide: HEALTH_READINESS_INDICATORS,
-        useFactory: (...injected: BaseHealthIndicator[]) => [
-          ...(options.readiness ?? []),
-          ...injected,
-        ],
+        useFactory: (...injected: BaseHealthIndicator[]) => [...readiness, ...injected],
         inject: readinessClasses,
       },
-      {
-        provide: HealthService,
-        useFactory: (liveness: IHealthIndicator[], readiness: IHealthIndicator[]) =>
-          new HealthService(liveness, readiness),
-        inject: [HEALTH_LIVENESS_INDICATORS, HEALTH_READINESS_INDICATORS],
-      },
+      ...HealthKitModule._healthServiceProvider(),
     ];
-
-    const HealthController = createHealthController(path);
 
     return {
       module: HealthKitModule,
-      controllers: [HealthController],
+      controllers: [createHealthController(path)],
       providers,
       exports: [HealthService],
     };
   }
 
   static registerAsync(options: HealthModuleAsyncOptions): DynamicModule {
-    const path = options.path ?? "health";
-    const indicatorClasses = options.indicators ?? [];
-
-    const livenessClasses = indicatorClasses.filter(
-      (cls) => Reflect.getMetadata(HEALTH_INDICATOR_METADATA, cls) === "liveness",
-    );
-    const readinessClasses = indicatorClasses.filter(
-      (cls) => Reflect.getMetadata(HEALTH_INDICATOR_METADATA, cls) === "readiness",
-    );
-
-    const indicatorProviders: Provider[] = indicatorClasses.map((cls) => ({
-      provide: cls,
-      useClass: cls,
-    }));
+    const { path = "health", indicators = [], imports = [], inject = [] } = options;
+    const { indicatorProviders, livenessClasses, readinessClasses } =
+      HealthKitModule._resolveIndicatorClasses(indicators);
 
     const providers: Provider[] = [
       ...indicatorProviders,
       {
         provide: HEALTH_MODULE_OPTIONS,
         useFactory: options.useFactory,
-        inject: (options.inject as never[]) ?? [],
+        inject: inject as never[],
       },
       {
         provide: HEALTH_LIVENESS_INDICATORS,
@@ -153,6 +116,34 @@ export class HealthKitModule {
         ],
         inject: [HEALTH_MODULE_OPTIONS, ...readinessClasses],
       },
+      ...HealthKitModule._healthServiceProvider(),
+    ];
+
+    return {
+      module: HealthKitModule,
+      imports,
+      controllers: [createHealthController(path)],
+      providers,
+      exports: [HealthService],
+    };
+  }
+
+  private static _resolveIndicatorClasses(indicators: Type<BaseHealthIndicator>[]) {
+    const livenessClasses = indicators.filter(
+      (cls) => Reflect.getMetadata(HEALTH_INDICATOR_METADATA, cls) === "liveness",
+    );
+    const readinessClasses = indicators.filter(
+      (cls) => Reflect.getMetadata(HEALTH_INDICATOR_METADATA, cls) === "readiness",
+    );
+    const indicatorProviders: Provider[] = indicators.map((cls) => ({
+      provide: cls,
+      useClass: cls,
+    }));
+    return { livenessClasses, readinessClasses, indicatorProviders };
+  }
+
+  private static _healthServiceProvider(): Provider[] {
+    return [
       {
         provide: HealthService,
         useFactory: (liveness: IHealthIndicator[], readiness: IHealthIndicator[]) =>
@@ -160,15 +151,5 @@ export class HealthKitModule {
         inject: [HEALTH_LIVENESS_INDICATORS, HEALTH_READINESS_INDICATORS],
       },
     ];
-
-    const HealthController = createHealthController(path);
-
-    return {
-      module: HealthKitModule,
-      imports: options.imports ?? [],
-      controllers: [HealthController],
-      providers,
-      exports: [HealthService],
-    };
   }
 }
