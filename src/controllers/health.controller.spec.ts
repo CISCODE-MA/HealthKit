@@ -10,8 +10,8 @@ import { createHealthController } from "./health.controller";
 
 const makeService = (liveness: "ok" | "error", readiness: "ok" | "error") =>
   ({
-    checkLiveness: jest.fn().mockResolvedValue({ status: liveness, indicators: [] }),
-    checkReadiness: jest.fn().mockResolvedValue({ status: readiness, indicators: [] }),
+    checkLiveness: jest.fn().mockResolvedValue({ status: liveness, results: [] }),
+    checkReadiness: jest.fn().mockResolvedValue({ status: readiness, results: [] }),
   }) as unknown as HealthService;
 
 interface HealthControllerInstance {

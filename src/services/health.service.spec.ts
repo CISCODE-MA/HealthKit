@@ -86,7 +86,7 @@ describe("HealthService", () => {
     const result = await service.checkReadiness();
 
     expect(result.status).toBe("error");
-    const failed = result.results.find((r: { status: string }) => r.status === "down");
+    const failed = result.results.find((r) => r.status === "down");
     expect(failed?.message).toBe("ECONNREFUSED");
   });
 
