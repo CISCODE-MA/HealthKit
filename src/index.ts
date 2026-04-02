@@ -3,41 +3,52 @@ import "reflect-metadata";
 // ============================================================================
 // PUBLIC API EXPORTS
 // ============================================================================
-// This file defines what consumers of your module can import.
-// ONLY export what is necessary for external use.
-// Keep entities, repositories, and internal implementation details private.
 
 // ============================================================================
 // MODULE
 // ============================================================================
-export { ExampleKitModule } from "./example-kit.module";
-export type { ExampleKitOptions, ExampleKitAsyncOptions } from "./example-kit.module";
+export { HealthKitModule } from "./health-kit.module";
+export type { HealthModuleOptions } from "./health-kit.module";
 
 // ============================================================================
-// SERVICES (Main API)
+// SERVICE (Programmatic API)
 // ============================================================================
-// Export services that consumers will interact with
-export { ExampleService } from "./services/example.service";
+export { HealthService } from "./services/health.service";
+export type { HealthCheckResult } from "./services/health.service";
 
 // ============================================================================
-// DTOs (Public Contracts)
+// BUILT-IN INDICATORS
 // ============================================================================
-// DTOs are the public interface for your API
-// Consumers depend on these, so they must be stable
-export { CreateExampleDto } from "./dto/create-example.dto";
-export { UpdateExampleDto } from "./dto/update-example.dto";
+export { PostgresHealthIndicator } from "./indicators/postgres.indicator";
+export type { PostgresClient } from "./indicators/postgres.indicator";
+
+export { RedisHealthIndicator } from "./indicators/redis.indicator";
+export type { RedisClient } from "./indicators/redis.indicator";
+
+export { HttpHealthIndicator } from "./indicators/http.indicator";
+
+export { MongoHealthIndicator } from "./indicators/mongo.indicator";
+export type { MongoDb } from "./indicators/mongo.indicator";
 
 // ============================================================================
-// GUARDS (For Route Protection)
+// CUSTOM INDICATOR API
 // ============================================================================
-// Export guards so consumers can use them in their apps
-export { ExampleGuard } from "./guards/example.guard";
+export { createIndicator } from "./indicators/create-indicator";
+export { BaseHealthIndicator } from "./indicators/base.indicator";
+export {
+  HealthIndicator,
+  HEALTH_INDICATOR_METADATA,
+} from "./decorators/health-indicator.decorator";
+export type { HealthIndicatorScope } from "./decorators/health-indicator.decorator";
 
 // ============================================================================
-// DECORATORS (For Dependency Injection & Metadata)
+// TYPES & INTERFACES
 // ============================================================================
-// Export decorators for use in consumer controllers/services
-export { ExampleData, ExampleParam } from "./decorators/example.decorator";
+export type {
+  IHealthIndicator,
+  HealthIndicatorResult,
+  HealthStatus,
+} from "./interfaces/health-indicator.interface";
 
 // ============================================================================
 // TYPES & INTERFACES (For TypeScript Typing)
