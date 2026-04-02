@@ -8,5 +8,22 @@
     "outDir": "dist"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["test", "**/*.spec.ts", "**/*.test.ts", "dist", "node_modules"]
+  "exclude": [
+    "test",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "dist",
+    "node_modules",
+    "src/example-kit.module.ts",
+    "src/controllers/example.controller.ts",
+    "src/decorators/example.decorator.ts",
+    "src/dto",
+    "src/entities",
+    "src/filters",
+    "src/guards/example.guard.ts",
+    "src/middleware",
+    "src/repositories",
+    "src/services/example.service.ts",
+    "src/utils"
+  ]
 }
