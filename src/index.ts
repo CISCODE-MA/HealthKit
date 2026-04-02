@@ -31,6 +31,17 @@ export { MongoHealthIndicator } from "./indicators/mongo.indicator";
 export type { MongoDb } from "./indicators/mongo.indicator";
 
 // ============================================================================
+// CUSTOM INDICATOR API
+// ============================================================================
+export { createIndicator } from "./indicators/create-indicator";
+export { BaseHealthIndicator } from "./indicators/base.indicator";
+export {
+  HealthIndicator,
+  HEALTH_INDICATOR_METADATA,
+} from "./decorators/health-indicator.decorator";
+export type { HealthIndicatorScope } from "./decorators/health-indicator.decorator";
+
+// ============================================================================
 // TYPES & INTERFACES
 // ============================================================================
 export type {
