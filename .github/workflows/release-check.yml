@@ -3,16 +3,6 @@ name: CI - Release Check
 on:
   pull_request:
     branches: [master]
-  workflow_dispatch:
-    inputs:
-      sonar:
-        description: "Run SonarCloud analysis"
-        required: true
-        default: "false"
-        type: choice
-        options:
-          - "false"
-          - "true"
 
 concurrency:
   group: ci-release-${{ github.ref }}
@@ -22,13 +12,17 @@ jobs:
   ci:
     name: release checks
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      statuses: write
     timeout-minutes: 25
 
     # Config stays in the workflow file (token stays in repo secrets)
     env:
       SONAR_HOST_URL: "https://sonarcloud.io"
       SONAR_ORGANIZATION: "ciscode"
-      SONAR_PROJECT_KEY: "CISCODE-MA_LoggingKit"
+      SONAR_PROJECT_KEY: "CISCODE-MA_HealthKit"
 
     steps:
       - name: Checkout
@@ -61,23 +55,34 @@ jobs:
         run: npm run build
 
       - name: SonarCloud Scan
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.sonar == 'true' }}
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.organization=${{ env.SONAR_ORGANIZATION }} \
-            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} \
-            -Dsonar.sources=src \
-            -Dsonar.tests=test \
+            -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+            -Dsonar.sources=src
+            -Dsonar.tests=test
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
 
       - name: SonarCloud Quality Gate
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.sonar == 'true' }}
         uses: SonarSource/sonarqube-quality-gate-action@v1
         timeout-minutes: 10
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
+
+      - name: Report CI status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: '${{ job.status }}' === 'success' ? 'success' : 'failure',
+                                                           description: 'CI checks completed'
+            })
