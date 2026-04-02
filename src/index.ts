@@ -8,7 +8,7 @@ import "reflect-metadata";
 // MODULE
 // ============================================================================
 export { HealthKitModule } from "./health-kit.module";
-export type { HealthModuleOptions } from "./health-kit.module";
+export type { HealthModuleOptions, HealthModuleAsyncOptions } from "./health-kit.module";
 
 // ============================================================================
 // SERVICE (Programmatic API)
@@ -27,8 +27,16 @@ export type { RedisClient } from "./indicators/redis.indicator";
 
 export { HttpHealthIndicator } from "./indicators/http.indicator";
 
-export { MongoHealthIndicator } from "./indicators/mongo.indicator";
-export type { MongoDb } from "./indicators/mongo.indicator";
+// ============================================================================
+// CUSTOM INDICATOR API
+// ============================================================================
+export { createIndicator } from "./indicators/create-indicator";
+export { BaseHealthIndicator } from "./indicators/base.indicator";
+export {
+  HealthIndicator,
+  HEALTH_INDICATOR_METADATA,
+} from "./decorators/health-indicator.decorator";
+export type { HealthIndicatorScope } from "./decorators/health-indicator.decorator";
 
 // ============================================================================
 // TYPES & INTERFACES
