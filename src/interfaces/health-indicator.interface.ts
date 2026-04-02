@@ -13,6 +13,8 @@ export interface HealthIndicatorResult {
   status: HealthStatus;
   /** Optional human-readable message (required when status is "down"). */
   message?: string;
+  /** Optional structured metadata (e.g. response time, version). */
+  details?: Record<string, unknown>;
 }
 
 /**
