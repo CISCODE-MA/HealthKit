@@ -29,7 +29,7 @@ describe("HealthService", () => {
       const result = await service.checkLiveness();
 
       expect(result.status).toBe("ok");
-      expect(result.indicators).toEqual([up("proc")]);
+      expect(result.results).toEqual([up("proc")]);
     });
 
     it("returns status 'error' when any liveness indicator is down", async () => {
@@ -47,7 +47,7 @@ describe("HealthService", () => {
       const result = await service.checkLiveness();
 
       expect(result.status).toBe("ok");
-      expect(result.indicators).toEqual([]);
+      expect(result.results).toEqual([]);
     });
   });
 
@@ -62,7 +62,7 @@ describe("HealthService", () => {
       const result = await service.checkReadiness();
 
       expect(result.status).toBe("ok");
-      expect(result.indicators).toHaveLength(2);
+      expect(result.results).toHaveLength(2);
     });
 
     it("returns status 'error' when any readiness indicator is down", async () => {
@@ -86,7 +86,7 @@ describe("HealthService", () => {
     const result = await service.checkReadiness();
 
     expect(result.status).toBe("error");
-    const failed = result.indicators.find((r) => r.status === "down");
+    const failed = result.results.find((r: { status: string }) => r.status === "down");
     expect(failed?.message).toBe("ECONNREFUSED");
   });
 
