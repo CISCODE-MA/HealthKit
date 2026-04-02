@@ -1,7 +1,7 @@
 {
   "name": "@ciscode/health-kit",
   "version": "1.0.0",
-  "description": "NestJS health-check module — liveness & readiness probes with built-in MongoDB, Redis, and HTTP indicators.",
+  "description": "NestJS health-check module — liveness & readiness probes with built-in PostgreSQL, Redis, and HTTP indicators.",
   "author": "CisCode",
   "publishConfig": {
     "access": "public"
@@ -45,8 +45,14 @@
   "peerDependencies": {
     "@nestjs/common": "^10 || ^11",
     "@nestjs/core": "^10 || ^11",
+    "@nestjs/terminus": "^10 || ^11",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/terminus": {
+      "optional": true
+    }
   },
   "dependencies": {
     "class-transformer": "^0.5.1",
