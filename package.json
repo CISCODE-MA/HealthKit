@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CISCODE-MA/"
+    "url": "git+https://github.com/CISCODE-MA/HealthKit.git"
   },
   "license": "MIT",
   "files": [
