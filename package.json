@@ -1,6 +1,6 @@
 {
   "name": "@ciscode/health-kit",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "NestJS health-check module — liveness & readiness probes with built-in PostgreSQL, Redis, and HTTP indicators.",
   "author": "CisCode",
   "publishConfig": {
