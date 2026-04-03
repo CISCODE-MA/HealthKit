@@ -8,6 +8,6 @@
   "baseBranch": "develop",
   "updateInternalDependencies": "patch",
   "ignore": [],
-  "repo": "ciscode/nest-js-developer-kit",
+  "repo": "CISCODE-MA/HealthKit",
   "preState": null
 }
