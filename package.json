@@ -1,14 +1,14 @@
 {
-  "name": "@ciscode/nestjs-developerkit",
-  "version": "1.0.0",
-  "description": "Template for NestJS developer kits (npm packages).",
+  "name": "@ciscode/health-kit",
+  "version": "0.1.0",
+  "description": "NestJS health-check module — liveness & readiness probes with built-in PostgreSQL, Redis, and HTTP indicators.",
   "author": "CisCode",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CISCODE-MA/"
+    "url": "git+https://github.com/CISCODE-MA/HealthKit.git"
   },
   "license": "MIT",
   "files": [
@@ -45,13 +45,14 @@
   "peerDependencies": {
     "@nestjs/common": "^10 || ^11",
     "@nestjs/core": "^10 || ^11",
-    "@nestjs/platform-express": "^10 || ^11",
+    "@nestjs/terminus": "^10 || ^11",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7"
   },
-  "dependencies": {
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.1"
+  "peerDependenciesMeta": {
+    "@nestjs/terminus": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.7",

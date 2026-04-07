@@ -27,10 +27,10 @@ const config: Config = {
   coverageDirectory: "coverage",
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
+      branches: 85,
+      functions: 85,
+      lines: 85,
+      statements: 85,
     },
   },
   moduleNameMapper: {
@@ -46,6 +46,8 @@ const config: Config = {
     "^@filters/(.*)$": "<rootDir>/src/filters/$1",
     "^@middleware/(.*)$": "<rootDir>/src/middleware/$1",
     "^@utils/(.*)$": "<rootDir>/src/utils/$1",
+    "^@interfaces/(.*)$": "<rootDir>/src/interfaces/$1",
+    "^@indicators/(.*)$": "<rootDir>/src/indicators/$1",
   },
 };
 

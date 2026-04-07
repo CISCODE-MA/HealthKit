@@ -1,42 +1,80 @@
 // @ts-check
 import eslint from "@eslint/js";
-import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import globals from "globals";
+import importPlugin from "eslint-plugin-import";
 import tseslint from "typescript-eslint";
 
-export default tseslint.config(
+export default [
   {
-    ignores: ["eslint.config.mjs"],
+    ignores: [
+      "dist/**",
+      "coverage/**",
+      "node_modules/**",
+      // Ignore all example files for CSR architecture
+      "src/example-kit.*",
+      "src/controllers/example.controller.ts",
+      "src/services/example.service.ts",
+      "src/entities/example.entity.ts",
+      "src/repositories/example.repository.ts",
+      "src/guards/example.guard.ts",
+      "src/decorators/example.decorator.ts",
+      "src/dto/create-example.dto.ts",
+      "src/dto/update-example.dto.ts",
+    ],
   },
+
   eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
-  eslintPluginPrettierRecommended,
+
+  // TypeScript ESLint (includes recommended rules)
+  ...tseslint.configs.recommended,
+
+  // Base TS rules (all TS files)
   {
+    files: ["**/*.ts"],
     languageOptions: {
-      globals: {
-        ...globals.node,
-        ...globals.jest,
-      },
-      sourceType: "commonjs",
+      parser: tseslint.parser,
       parserOptions: {
-        projectService: true,
+        project: "./tsconfig.eslint.json",
         tsconfigRootDir: import.meta.dirname,
+        ecmaVersion: "latest",
+        sourceType: "module",
       },
+      globals: { ...globals.node, ...globals.jest },
     },
-  },
-  {
+    plugins: {
+      "@typescript-eslint": tseslint.plugin,
+      import: importPlugin,
+    },
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-floating-promises": "warn",
-      "@typescript-eslint/no-unsafe-argument": "warn",
-      "@typescript-eslint/no-unused-vars": [
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
+
+      "import/no-duplicates": "error",
+      "import/order": [
         "error",
         {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
+          "newlines-between": "always",
+          alphabetize: { order: "asc", caseInsensitive: true },
         },
       ],
-      "no-unused-vars": "off",
     },
   },
-);
+
+  // Architecture boundary: core must not import Nest
+  {
+    files: ["src/core/**/*.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@nestjs/*"],
+              message: "Do not import NestJS in core/. Keep core framework-free.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+];
